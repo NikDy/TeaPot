@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using TeaPot;
 using YoutubeExplode;
 using YoutubeExplode.Exceptions;
 using YoutubeExplode.Videos;
@@ -33,7 +34,7 @@ public class Program
         _client.MessageReceived += HandleMessageAsync;
 
 
-        string botToken = "OTk0MzA5ODM3MzU5OTUxOTUy.GeOp_N.sIP_kkQCJJOsqZTWD8avKwgXYuixrGzIZMC3KI";
+        string botToken = TokenHolder.DISCORD_TOKEN;
         await _client.LoginAsync(TokenType.Bot, botToken);
         await _client.StartAsync();
         
