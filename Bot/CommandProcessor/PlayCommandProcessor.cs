@@ -19,6 +19,11 @@ namespace TeaPot.Bot.CommandProcessor
     {
         public async Task Process(SocketSlashCommand command)
         {
+            if ((command.User as IGuildUser).VoiceChannel == null)
+            {
+                await command.RespondAsync("To call me you must be on a voice channel 😏");
+                return;
+            }
             Dictionary<string, object> loadedOptions = new Dictionary<string, object>();
             foreach (var option in command.Data.Options)
             {
@@ -84,7 +89,7 @@ namespace TeaPot.Bot.CommandProcessor
                                               video.Duration,
                                               video.Title);
                 var playerResponse = PlayersHandler.TakeAudioContainer(container);
-                if (playerResponse.Contains("now playing")) await command.ModifyOriginalResponseAsync(originalResponse => originalResponse.Content = PlayersHandler.TakeAudioContainer(container));
+                if (!playerResponse.Contains("added to queue")) await command.ModifyOriginalResponseAsync(originalResponse => originalResponse.Content = PlayersHandler.TakeAudioContainer(container));
                 else await command.ModifyOriginalResponseAsync(originalResponse => originalResponse.Content = PlayersHandler.TakeAudioContainer(container) + $"/{list.Count}");
             }
         }

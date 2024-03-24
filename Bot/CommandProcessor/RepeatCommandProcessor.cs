@@ -12,6 +12,11 @@ namespace TeaPot.Bot.CommandProcessor
     {
         public async Task Process(SocketSlashCommand command)
         {
+            if ((command.User as IGuildUser).VoiceChannel == null)
+            {
+                await command.RespondAsync("To call me you must be on a voice channel 😏");
+                return;
+            }
             Dictionary<string, object> loadedOptions = new Dictionary<string, object>();
             long times = 1;
             foreach (var option in command.Data.Options)

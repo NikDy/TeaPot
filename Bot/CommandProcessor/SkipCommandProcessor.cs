@@ -12,6 +12,11 @@ namespace TeaPot.Bot.CommandProcessor
     {
         public async Task Process(SocketSlashCommand command)
         {
+            if ((command.User as IGuildUser).VoiceChannel == null)
+            {
+                await command.RespondAsync("To call me you must be on a voice channel 😏");
+                return;
+            }
             await command.DeferAsync();
             Dictionary<string, object> loadedOptions = new Dictionary<string, object>();
             long toSkip = 1;
@@ -29,7 +34,7 @@ namespace TeaPot.Bot.CommandProcessor
                 if(player.playing == null) await command.RespondAsync("Nothing to skip");                
                 player.Skip(toSkip);
                 await command.ModifyOriginalResponseAsync(originalResponse => originalResponse.Content = toSkip == 1 ? "Skipping track" : $"Skippping {toSkip} tracks");
-                if (player.GetNextContainer() != null) { await command.Channel.SendMessageAsync($"Now playing {player.GetNextContainer().Title}"); }
+                if (player.GetNextContainer() != null) { await command.Channel.SendMessageAsync($"Now playing {player.GetNextContainer().Title} \n {player.GetNextContainer().SourceUrl}"); }
             }
             else
                 await command.ModifyOriginalResponseAsync(originalResponse => originalResponse.Content = "Cant skip");
