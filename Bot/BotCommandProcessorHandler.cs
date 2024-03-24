@@ -30,7 +30,7 @@ namespace TeaPot.Bot
                     _ = new SkipCommandProcessor().Process(command);
                     break;
                 case BotSlashCommads.REPEAT_COMMAND_NAME:
-                    _ = new SkipCommandProcessor().Process(command);
+                    _ = new RepeatCommandProcessor().Process(command);
                     break;
             }
         }
