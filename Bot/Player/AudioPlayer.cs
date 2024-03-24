@@ -26,7 +26,7 @@ namespace TeaPot.Bot.Player
         private CancellationTokenSource playerCancellationToken;
         private CancellationTokenSource audioCanncellationToken;
         public AudioContainer? playing { get; private set; }
-        private int repeats = 0;
+        private long repeats = 0;
 
 
         public event Action Stopping;
@@ -77,7 +77,7 @@ namespace TeaPot.Bot.Player
                             do
                             {
                                 converted.Position = 0;
-                                repeats--;
+                                repeats =  repeats > 0 ? repeats - 1 : 0;
                                 await converted.CopyToAsync(audioClient, audioCanncellationToken.Token);
                             }
                             while (repeats > 0);
@@ -123,9 +123,11 @@ namespace TeaPot.Bot.Player
         public void Skip(long times = 1)
         {
             audioCanncellationToken?.Cancel();
-            if (times - 1 <= 1) return;
+            repeats = 0;
+            if (times < 1) return;
             var toRemove = Math.Min(times - 1, queue.Count);
             for (int i = 0; i < toRemove; i++) { queue.Dequeue(); }
+            if (queue.Count == 0) Stop();
         }
 
 
@@ -140,9 +142,9 @@ namespace TeaPot.Bot.Player
         }
         
 
-        public void Repeat(long times)
+        public void Repeat(long times = 1)
         {
-            repeats = (int)times;
+            repeats = times;
         }
 
     }
