@@ -56,7 +56,7 @@ namespace TeaPot.Bot.Player
                 using (voiceChannelClient = await ChannelID.ConnectAsync())                    
                 {                    
                     audioClient = voiceChannelClient.CreatePCMStream(AudioApplication.Music);
-                    voiceChannelClient.ClientDisconnected += VoiceChannelClient_ClientDisconnected;
+                    voiceChannelClient.Disconnected += VoiceChannelClient_Disconnected;                    
                     while (queue.Count > 0) 
                     {
                         playing = queue.Dequeue();
@@ -94,6 +94,14 @@ namespace TeaPot.Bot.Player
             }, playerCancellationToken.Token);
         }
 
+
+        private Task VoiceChannelClient_Disconnected(Exception arg)
+        {
+            Console.WriteLine($"VoiceChannelDisconnected: {arg}");
+            Stop();
+            return Task.CompletedTask;
+        }
+
         private async Task TryBufferNext()
         {
             if (queue.Count > 0)
@@ -110,11 +118,6 @@ namespace TeaPot.Bot.Player
             }
         }
 
-        private Task VoiceChannelClient_ClientDisconnected(ulong arg)
-        {
-            PlayersHandler.DestroyPlayer(this);
-            return Task.CompletedTask;
-        }
 
         /// <summary>
         /// Do skip in amound of times, skip including playing track
