@@ -363,5 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 #Hide tokens from git
-TokenHolder.cs
 /TokenHolder.cs
+/Program.cs
